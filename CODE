@@ -1,0 +1,35 @@
+import sys
+import microgear.client as microgear
+import time
+import RPi.GPIO as GPIO
+import requests
+GPIO.setmode(GPIO.BCM)
+GPIO.cleanup()
+GPIO.setwarnings(False)
+GPIO.setup(27,GPIO.OUT)
+GPIO.setup(23,GPIO.IN)
+
+while True:
+  i = GPIO.input(23)
+  print(i)
+  if (i == 0) :
+     GPIO.output(27, GPIO.LOW)
+     print("no intruders",i)
+     print(" LED OFF ")
+  elif(i == 1):
+     GPIO.output(27, GPIO.HIGH)
+     time.sleep (2)
+     GPIO.output(27, GPIO.LOW)
+     time.sleep (1)
+     GPIO.output(27, GPIO.HIGH)
+     time.sleep (2)
+     GPIO.output(27, GPIO.LOW)
+     time.sleep (1)
+     url = 'https://notify-api.line.me/api/notify'
+     token = 'YNqZpmvaZmHQ6MKVzdWtljNIKdsOGfOxDP11eZcj27k'
+     headers = {'content-type':'application/x-www-form-urlencoded','Authorization$
+     msg = 'intruder detect'
+     r = requests.post(url, headers=headers, data = {'message':msg})
+     print(r.text)
+     time.sleep(3)
+     print("LED OFF")
